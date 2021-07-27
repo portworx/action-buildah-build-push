@@ -44,6 +44,11 @@ username:
 password:
   description: 'Password used for authentication to the target registry.'
   required: true
+
+script-name:
+  description: 'Name of the buildah script to execute to build the image.'
+  required: true
+  default: 'buildah.sh'
 ```
 
 ## Outputs

@@ -22,6 +22,10 @@ inputs:
   password:
     description: 'Password used for authentication to the target registry.'
     required: true
+  script-name:
+    description: 'Name of the buildah script to execute to build the image.'
+    required: true
+    default: 'buildah.sh'
 
 outputs:
   image-path:
@@ -35,8 +39,8 @@ runs:
     - name: Build image
       shell: bash
       run: |
-        echo "Running buildah.sh script in directory ${{ inputs.image-tag }}"
-        ${{ inputs.image-tag }}/buildah.sh
+        echo "Running ${{ inputs.script-name }} script in directory ${{ inputs.image-tag }}"
+        ${{ inputs.image-tag }}/${{ inputs.script-name }}
     - name: Push image
       id: push
       shell: bash
