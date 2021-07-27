@@ -35,6 +35,7 @@ runs:
     - name: Build image
       shell: bash
       run: |
+        echo "Running buildah.sh script in directory ${{ inputs.image-tag }}"
         ${{ inputs.image-tag }}/buildah.sh
     - name: Push image
       id: push
@@ -43,3 +44,4 @@ runs:
         IMG=${{ inputs.remote-registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}-${{ inputs.short-sha }}
         buildah push --creds=${{ inputs.username }}:${{ inputs.password }} ${{ inputs.image-tag }} ${IMG}
         echo "::set-output name=image-path::${IMG}"
+        echo "Pushed image to ${IMG}"
