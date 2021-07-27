@@ -1,0 +1,46 @@
+
+name: 'Buildah Build and Push'
+description: 'Run a `buildah.sh` script in the specified directory, create an image with the corresponding tag and push to a container registry'
+
+inputs:
+  remote-registry:
+    description: 'Name of the remote registry to push to.'
+    required: true
+    default: 'docker.io'
+  image-name:
+    description: 'Name of the image. This should correspond to the name of the repository which will be pushed to.'
+    required: true
+    default: 'portworx/pds-base'
+  image-tag:
+    description: 'Tag of the image. This should also correspond to the containing directory name. The resulting tag will use this name.'
+    required: true
+  short-sha:
+    description: 'Short git SHA of the current commit. This will be appended to the pushed image tag.'
+    required: true
+  username:
+    description: 'Username used for authentication to the target registry.'
+    required: true
+  password:
+    description: 'Password used for authentication to the target registry.'
+    required: true
+
+outputs:
+  image-path:
+    description: 'Full path to the image pushed to the remote registry.'
+    value: ${{ steps.push.outputs.image-path }}
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Build image
+      shell: bash
+      run: |
+        ${{ inputs.image-tag }}/buildah.sh
+    - name: Push image
+      id: push
+      shell: bash
+      run: |
+        IMG=${{ inputs.remote-registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}-${{ inputs.short-sha }}
+        buildah push --creds=${{ inputs.username }}:${{ inputs.password }} ${{ inputs.image-tag }} ${IMG}
+        echo "::set-output name=image-path::${IMG}"
