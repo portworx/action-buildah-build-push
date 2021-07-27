@@ -8,7 +8,7 @@ This image is then pushed to a specified container registry.
 ## Usage
 
 ```yml
-- uses: portworx/action-buildah-build-push@v1
+- uses: portworx/action-buildah-build-push@v1.1
   with:
     image-name: portworx/image
     image-tag: tag
