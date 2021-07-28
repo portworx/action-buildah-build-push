@@ -39,13 +39,17 @@ runs:
     - name: Build image
       shell: bash
       run: |
+        echo "::group::Build"
         echo "Running ${{ inputs.script-name }} script in directory ${{ inputs.image-tag }}"
         ${{ inputs.image-tag }}/${{ inputs.script-name }}
+        echo "::endgroup::"
     - name: Push image
       id: push
       shell: bash
       run: |
+        echo "::group::Push"
         IMG=${{ inputs.remote-registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}-${{ inputs.short-sha }}
         buildah push --creds=${{ inputs.username }}:${{ inputs.password }} ${{ inputs.image-tag }} ${IMG}
         echo "::set-output name=image-path::${IMG}"
         echo "Pushed image to ${IMG}"
+        echo "::endgroup::"
