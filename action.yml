@@ -49,7 +49,8 @@ runs:
       run: |
         echo "::group::Push"
         IMG=${{ inputs.remote-registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}-${{ inputs.short-sha }}
-        buildah push --creds=${{ inputs.username }}:${{ inputs.password }} ${{ inputs.image-tag }} ${IMG}
+        IMG_WITHOUT_SHA=${{ inputs.remote-registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
+        buildah push --creds=${{ inputs.username }}:${{ inputs.password }} ${IMG_WITHOUT_SHA} ${IMG}
         echo "::set-output name=image-path::${IMG}"
         echo "Pushed image to ${IMG}"
         echo "::endgroup::"
