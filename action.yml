@@ -49,7 +49,9 @@ runs:
       run: |
         echo "::group::Push"
         IMG=${{ inputs.remote-registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}-${{ inputs.short-sha }}
-        buildah push --creds=${{ inputs.username }}:${{ inputs.password }} ${{ inputs.image-tag }} ${IMG}
+        # buildah imageID does not support uppercase characters, so 'buildah push' was called with lowercase imageID.
+        BUILDAH_IMG_ID=$(echo "${{ inputs.image-tag }}" | tr '[:upper:]' '[:lower:]')
+        buildah push --creds=${{ inputs.username }}:${{ inputs.password }} ${BUILDAH_IMG_ID} ${IMG}
         echo "::set-output name=image-path::${IMG}"
         echo "Pushed image to ${IMG}"
         echo "::endgroup::"
